@@ -1,0 +1,46 @@
+AWS info
+
+https://www.youtube.com/watch?v=6RrqytT0-I8&t=329s
+
+upload to s3
+
+aws s3 sync s3://metro.furniture/backend/server-.0.0.1-SNAPSHOT.jar .
+
+
+
+TODO:
+
+
+UI
+	
+	products
+		duplicate
+		way to search more easily, when in the specific product screen should be able to switch product
+		picture show room
+		contact page / location
+		hidden login/logout inventory
+	Types
+		order priority?
+		type post is cors error ?
+		
+		
+	Subtype
+		max size for picture upload?!?!?!
+		
+	defautl type/products? no show when tab to it
+	
+	in information, when first load there is always no products, fail some init
+	Refresh looks like it loses login session? maybe cross origin problem
+		
+	
+TrueSplit bill box need to be bigger, clickable  DONE
+Tip calculator suggestion popup, 15% 20% etc, custom - show actual value too   - DONE
+	- Has popup menu, - make it functional
+	- When popup mode hide the touchable text input part
+Remove extra S from tutorial DONE
+
+
+- ENABLE DEEP LINKING 
+	should be able to text a link to friend, which will bring into app with the split configuration they have
+- CAMERA RECEIPT
+
