@@ -72,7 +72,7 @@ export class ProductInfoForm extends Component {
             color: convertedColorModel
 
         }
-        callApiWithToken(this, (config)=>{
+        callApiWithToken(this.props.authentication, (config)=>{
             this.props.postProduct(product, config, (success) => {
                 document.getElementById("input_base_code").value="";
                 document.getElementById("input_m_size").value="";
@@ -140,7 +140,7 @@ export class ProductInfoForm extends Component {
             return
         }
         var file = e.target.files[0];
-        callApiWithToken(this, (config)=>{
+        callApiWithToken(this.props.authentication, (config)=>{
             this.props.deletePostS3(file, this.state.m_type + "/" + this.state.m_subtype +"/", "", config,(success, url)=> {
                 if (success){
                     this.editColorModel(uuid, "url", url);
@@ -333,7 +333,8 @@ ProductInfoForm.propTypes = {
 }
 
 const mapStateToProps = state => ({
-    product: state.productReducer.product
+    product: state.productReducer.product,
+    authentication: state.searchReducer.authentication
 });
 
 export default connect(mapStateToProps, {postProduct, deletePostS3, throwMessageAction})(ProductInfoForm);

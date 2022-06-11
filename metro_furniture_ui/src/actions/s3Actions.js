@@ -18,7 +18,9 @@ export function deletePostS3(file, path, deletePath, config2, successfulCallback
         const config = {
             headers: {
                 'content-type': 'multipart/form-data',
-                'Authorization': (isValid(config2) && isValid(config2.headers) && isValid(config2.headers.Authorization))?config2.headers.Authorization:"NA"
+                'Authorization': (isValid(config2) && isValid(config2.headers) && isValid(config2.headers.Authorization))?config2.headers.Authorization:"NA",
+                'username': config2.headers.username,
+                'password': config2.headers.password
             }
         }
          // axios.get('http://ec2-34-221-235-186.us-west-2.compute.amazonaws.com:8080/product/all')

@@ -44,3 +44,14 @@ Remove extra S from tutorial DONE
 	should be able to text a link to friend, which will bring into app with the split configuration they have
 - CAMERA RECEIPT
 
+
+
+6/9/22 
+- simple login/logout
+
+
+
+need:
+- login status for other pages
+- when sending api post, include login credentials for authentication
+- authenticate per req on backend

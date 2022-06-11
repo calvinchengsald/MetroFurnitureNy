@@ -7,6 +7,11 @@ const initialState = {
         filterSubtype: "",
         filterTag: "",
         filterGeneral: "",
+    },
+    authentication: {
+        authenticated: false,
+        username: "",
+        password: ""
     }
 }
 
@@ -16,6 +21,12 @@ export default function( state=initialState, action) {
             return {
                 ...state,
                 filterObject: action.payload,
+            }
+        case actionTypes.AUTH_UPDATE :
+            console.log(action.payload)
+            return {
+                ...state,
+                authentication: action.payload,
             }
         default: return state;
     }

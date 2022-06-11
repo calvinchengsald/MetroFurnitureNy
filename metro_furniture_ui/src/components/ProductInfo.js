@@ -58,7 +58,7 @@ export class ProductInfo extends Component {
 
     delete = () => {
         
-        callApiWithToken(this, (config)=>{
+        callApiWithToken(this.props.authentication, (config)=>{
             this.props.deleteProduct(this.props.product, config);
         } , this.props.throwMessageAction)
     }
@@ -233,7 +233,7 @@ export class ProductInfo extends Component {
             };
             // this component will go away, it no longer exits. refetch type list to get the updated list
             
-            callApiWithToken(this, (config)=>{
+            callApiWithToken(this.props.authentication, (config)=>{
                 this.props.deleteUpdateProducts(deleteUpdateModel, config,(success) => {
                     if(success){
                         this.props.fetchProducts();
@@ -262,7 +262,7 @@ export class ProductInfo extends Component {
             tag: this.state.tag
         };
         
-        callApiWithToken(this, (config)=>{
+        callApiWithToken(this.props.authentication, (config)=>{
             this.props.updateProduct(updatedProduct, config, (success) => {
                 if(success){
                     this.toggleEditMode(false, false);
@@ -312,7 +312,7 @@ export class ProductInfo extends Component {
         }
         var file = e.target.files[0];
         
-        callApiWithToken(this, (config)=>{
+        callApiWithToken(this.props.authentication, (config)=>{
             this.props.deletePostS3(file, this.props.product.m_type + "/" + this.props.product.m_subtype +"/", "", config, (success, url)=> {
                 console.log(url);
                 if (success){
@@ -578,6 +578,7 @@ ProductInfo.propTypes = {
 
 const mapStateToProps = state => ({
     // product: state.productReducer.product
+    authentication: state.searchReducer.authentication
 });
 
 export default connect(mapStateToProps, {updateProduct, deleteUpdateProducts,deletePostS3, fetchProducts, throwMessageAction})(ProductInfo);

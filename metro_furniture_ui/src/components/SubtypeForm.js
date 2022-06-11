@@ -49,7 +49,7 @@ export class SubtypeForm extends Component {
             return
         }
         var file = e.target.files[0];
-        callApiWithToken(this, (config)=>{
+        callApiWithToken(this.props.authentication, (config)=>{
             this.props.deletePostS3(file, "subtypes/", "", config,(success, url)=> {
                 if (success){
                     this.setState({
@@ -114,6 +114,7 @@ SubtypeForm.propTypes = {
 
 const mapStateToProps = state => ({
     
+    authentication: state.searchReducer.authentication
     // currentTypeEdit: state.typeReducer.currentTypeEdit,
 
 });

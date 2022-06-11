@@ -236,18 +236,26 @@ export const GetAuthenticationHeader = () => {
 
 
 
-export const callApiWithToken = async (that, callback, errorMessage) => {
-    try {
-        const token = await that.props.getTokenSilently();
+export const callApiWithToken = (authentication, callback, errorMessage) => {
+    // try {
+    //     const token = await that.props.getTokenSilently();
 
-        var config = {
-            headers: {
-                Authorization: `Bearer ${token}`
-              }
-        }
-        callback(config);
-    } catch (error) {
-        errorMessage("Authorization Error", "You must be logged in to make that action");
-      console.error(error);
+    //     var config = {
+    //         headers: {
+    //             Authorization: `Bearer ${token}`
+    //           }
+    //     }
+    //     callback(config);
+    // } catch (error) {
+    //     errorMessage("Authorization Error", "You must be logged in to make that action");
+    //   console.error(error);
+    // }
+    var config = {
+        headers: {
+            username: authentication.username,
+            password: authentication.password
+          }
     }
+    console.log(config)
+    callback(config);
   };

@@ -18,6 +18,7 @@ import com.amazonaws.services.s3.AmazonS3Client;
 import com.amazonaws.services.s3.model.CannedAccessControlList;
 import com.amazonaws.services.s3.model.DeleteObjectRequest;
 import com.amazonaws.services.s3.model.PutObjectRequest;
+import com.metro.model.Authentication;
 
 @Configuration
 public class S3Config {
@@ -33,8 +34,17 @@ public class S3Config {
 	@Value("${amazon.aws.secretkey}")
 	private String secretKey;
 
+	@Value("${auth.username}")
+	public String username;
+	@Value("${auth.password}")
+	public String password;
+
+	
 	@PostConstruct
 	private void initializeAmazon() {
+		Authentication.correctUsername =username;
+		Authentication.correctPassword =password;
+		
 		AWSCredentials credentials = new BasicAWSCredentials(this.accessKey, this.secretKey);
 		this.s3client = new AmazonS3Client(credentials);
 	}

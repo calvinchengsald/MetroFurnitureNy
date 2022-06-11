@@ -73,7 +73,7 @@ export class Subtypes extends Component {
             //since this exact subtype has changed, there will be a reload of subtypes.
             // this component will go away, it no longer exits. Will need to refetch subtype list
             // similarly the type list needs to be refreshed since it has a linkage to a new subtype, so it needs to be refreshed
-            callApiWithToken(this, (config)=>{
+            callApiWithToken(this.props.authentication, (config)=>{
                 this.props.deleteUpdateSubtypes(deleteUpdateModel, config, (success) => {
                     if(success){
                         // this.props.updateType(this.props.subtype.m_subtype, this.state.m_subtype);
@@ -96,7 +96,7 @@ export class Subtypes extends Component {
                 m_url: this.state.m_url,
                 m_description: this.state.m_description
             };
-            callApiWithToken(this, (config)=>{
+            callApiWithToken(this.props.authentication, (config)=>{
                 this.props.updateSubtypes(updatedSubtype, config, (success) => {
                     if(success){
                         this.setState({
@@ -125,7 +125,7 @@ export class Subtypes extends Component {
         updateType?
         this.props.deleteSubtypesAndUpdateType(this.props.subtype)
         :
-        callApiWithToken(this, (config)=>{
+        callApiWithToken(this.props.authentication, (config)=>{
             this.props.deleteSubtypes(this.props.subtype, config)
         } , this.props.throwMessageAction)
     }
@@ -151,7 +151,7 @@ export class Subtypes extends Component {
                 ...typeObject[0],
                 m_subtype: [...typeObject[0].m_subtype, this.state.m_subtype.trim()]
             }
-            callApiWithToken(this, (config)=>{
+            callApiWithToken(this.props.authentication, (config)=>{
                 this.props.updateTypes(newTypeObject,config,  (success) => {
                     if(success){
                         this.setState({
@@ -176,7 +176,7 @@ export class Subtypes extends Component {
         }
         var file = e.target.files[0];
         console.log(file)
-        callApiWithToken(this, (config)=>{
+        callApiWithToken(this.props.authentication, (config)=>{
             this.props.deletePostS3(file, "subtypes/", "", config,(success, url)=> {
                 if (success){
                     this.setState({
@@ -316,6 +316,7 @@ Subtypes.propTypes = {
 const mapStateToProps = state => ({
     // currentTypeEdit: state.typeReducer.currentTypeEdit,
 
+    authentication: state.searchReducer.authentication
 });
 
 export default connect(mapStateToProps, {updateSubtypes,fetchSubtypes,deleteUpdateSubtypes,throwMessageAction,deleteSubtypes,updateTypes,fetchTypes,fetchProducts, deletePostS3 })(Subtypes);

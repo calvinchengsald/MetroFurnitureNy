@@ -1,6 +1,7 @@
 package com.metro.controller;
 
 import java.util.List;
+import java.util.Map;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
@@ -11,14 +12,17 @@ import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
+import org.springframework.web.bind.annotation.RequestHeader;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
 import com.metro.entities.ApiResponse;
+import com.metro.exception.AuthenticationException;
 import com.metro.exception.DatabaseExceptions;
 import com.metro.exception.ItemAlreadyExistsException;
 import com.metro.exception.UndefinedItemCodeException;
+import com.metro.model.Authentication;
 import com.metro.model.DeleteUpdateModel;
 import com.metro.model.ProductInfo;
 import com.metro.repository.ProductInfoRepository;
@@ -36,8 +40,9 @@ public class GeneralController {
 
 
 	@PostMapping
-	public ResponseEntity<ApiResponse<ProductInfo>> insertIntoDynamoDB(@RequestBody ProductInfo p) {
+	public ResponseEntity<ApiResponse<ProductInfo>> insertIntoDynamoDB(@RequestHeader Map<String, String> headers, @RequestBody ProductInfo p) {
 		try {
+			Authentication.authenticate(headers);
 			repository.insert(p);
 			return new ResponseEntity<ApiResponse<ProductInfo>>(new ApiResponse<ProductInfo>(p,HttpStatus.OK, ""),HttpStatus.OK);
 		} catch (DatabaseExceptions e ) {
@@ -46,6 +51,8 @@ public class GeneralController {
 			}
 			
 			return new ResponseEntity<ApiResponse<ProductInfo>>(new ApiResponse<ProductInfo>(p,HttpStatus.BAD_REQUEST, e.getMessage()),HttpStatus.BAD_REQUEST);
+		} catch (AuthenticationException e ) {
+			return new ResponseEntity<ApiResponse<ProductInfo>>(new ApiResponse<ProductInfo>(p,HttpStatus.UNAUTHORIZED, e.getMessage()),HttpStatus.UNAUTHORIZED);
 		}
 		
 		
@@ -53,8 +60,9 @@ public class GeneralController {
 	
 
 	@PostMapping(value= "/update")
-	public ResponseEntity<ApiResponse<ProductInfo>> updateDynamoDB(@RequestBody ProductInfo p) {
+	public ResponseEntity<ApiResponse<ProductInfo>> updateDynamoDB(@RequestHeader Map<String, String> headers, @RequestBody ProductInfo p) {
 		try {
+			Authentication.authenticate(headers);
 			repository.update(p);
 			return new ResponseEntity<ApiResponse<ProductInfo>>(new ApiResponse<ProductInfo>(p,HttpStatus.OK, ""),HttpStatus.OK);
 		} catch (DatabaseExceptions e ) {
@@ -63,16 +71,18 @@ public class GeneralController {
 			}
 			
 			return new ResponseEntity<ApiResponse<ProductInfo>>(new ApiResponse<ProductInfo>(p,HttpStatus.BAD_REQUEST, e.getMessage()),HttpStatus.BAD_REQUEST);
+		} catch (AuthenticationException e ) {
+			return new ResponseEntity<ApiResponse<ProductInfo>>(new ApiResponse<ProductInfo>(p,HttpStatus.UNAUTHORIZED, e.getMessage()),HttpStatus.UNAUTHORIZED);
 		}
 	}
     
-
-
+	
 
 	//Used when you want to change the primary key. Will delete the record with that key and add in a new record
 	@PostMapping(value= "/deleteupdate")
-	public ResponseEntity<ApiResponse<ProductInfo>> deleteUpdateDynamoDB(@RequestBody DeleteUpdateModel<ProductInfo> p) {
+	public ResponseEntity<ApiResponse<ProductInfo>> deleteUpdateDynamoDB(@RequestHeader Map<String, String> headers, @RequestBody DeleteUpdateModel<ProductInfo> p) {
 		try {
+			Authentication.authenticate(headers);
 			if(Standardization.isInvalidString(p.getModel().getItem_code())) { 
 				throw new UndefinedItemCodeException("Unable to process item with invalid item code: [" +p.getModel().getItem_code() + "]" );
 			}
@@ -82,6 +92,8 @@ public class GeneralController {
 		} catch (DatabaseExceptions e ) {
 			
 			return new ResponseEntity<ApiResponse<ProductInfo>>(new ApiResponse<ProductInfo>(p.getModel(),HttpStatus.BAD_REQUEST, e.getMessage()),HttpStatus.BAD_REQUEST);
+		} catch (AuthenticationException e ) {
+			return new ResponseEntity<ApiResponse<ProductInfo>>(new ApiResponse<ProductInfo>(p.getModel(),HttpStatus.UNAUTHORIZED, e.getMessage()),HttpStatus.UNAUTHORIZED);
 		}
 	}
 	
@@ -93,9 +105,14 @@ public class GeneralController {
 	}
 	
 	@PostMapping(value = "/delete")
-	public ResponseEntity<ApiResponse<ProductInfo>> deleteProductInfo(@RequestBody ProductInfo p) {
-		repository.delete(p);
-		return new ResponseEntity<ApiResponse<ProductInfo>>(new ApiResponse<ProductInfo>(p,HttpStatus.OK, ""),HttpStatus.OK);
+	public ResponseEntity<ApiResponse<ProductInfo>> deleteProductInfo(@RequestHeader Map<String, String> headers, @RequestBody ProductInfo p) {
+		try{
+			Authentication.authenticate(headers);
+			repository.delete(p);
+			return new ResponseEntity<ApiResponse<ProductInfo>>(new ApiResponse<ProductInfo>(p,HttpStatus.OK, ""),HttpStatus.OK);
+		} catch (AuthenticationException e ) {
+			return new ResponseEntity<ApiResponse<ProductInfo>>(new ApiResponse<ProductInfo>(null,HttpStatus.UNAUTHORIZED, e.getMessage()),HttpStatus.UNAUTHORIZED);
+		}
 	}
     
 

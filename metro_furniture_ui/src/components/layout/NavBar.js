@@ -163,6 +163,7 @@ NavBar.propTypes = {
   subtypes: PropTypes.array.isRequired,
   products: PropTypes.array.isRequired,
   changeSearch: PropTypes.func.isRequired,
+  changeAuthentication: PropTypes.func.isRequired,
 }
 
 
@@ -171,6 +172,7 @@ const mapStateToProps = (state) => {
   products: state.productReducer.products,
   types: state.typeReducer.types,
   subtypes: state.typeReducer.subtypes,
+  authentication: state.searchReducer.authentication
   }
 };
 
