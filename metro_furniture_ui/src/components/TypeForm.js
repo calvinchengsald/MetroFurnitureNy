@@ -43,7 +43,7 @@ export class TypeForm extends Component {
             m_subtype: this.state.m_subtype
         }
         newType = objectStandardizer(newType,modelAttributeMapping.TYPE_MODEL );
-        callApiWithToken(this, (config)=>{
+        callApiWithToken(this.props.authentication, (config)=>{
             this.props.postTypes(newType, config, (success)=>{
                 if(success) {
                     this.exitEdit();
@@ -61,7 +61,7 @@ export class TypeForm extends Component {
             return
         }
         var file = e.target.files[0];
-        callApiWithToken(this, (config)=>{
+        callApiWithToken(this.props.authentication, (config)=>{
             this.props.deletePostS3(file, "types/", "", config,(success, url)=> {
                 if (success){
                     this.setState({
@@ -123,6 +123,7 @@ TypeForm.propTypes = {
 
 const mapStateToProps = state => ({
     
+    authentication: state.searchReducer.authentication
     // currentTypeEdit: state.typeReducer.currentTypeEdit,
 
 });

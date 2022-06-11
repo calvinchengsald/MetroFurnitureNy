@@ -1,6 +1,7 @@
 package com.metro.controller;
 
 import java.util.List;
+import java.util.Map;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
@@ -11,6 +12,7 @@ import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
+import org.springframework.web.bind.annotation.RequestHeader;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
@@ -18,6 +20,8 @@ import org.springframework.web.multipart.MultipartFile;
 
 import com.metro.configuration.S3Config;
 import com.metro.entities.ApiResponse;
+import com.metro.exception.AuthenticationException;
+import com.metro.model.Authentication;
 import com.metro.model.EdgeOption;
 import com.metro.model.ProductInfo;
 import com.metro.repository.EdgeOptionRepository;
@@ -32,10 +36,13 @@ public class S3Controller {
 	S3Config s3;
 
 	@PostMapping (value="/insert")
-	public ResponseEntity<ApiResponse<String>> insertImage(@RequestParam("file") MultipartFile file, @RequestParam("filePath") String filePath) {
+	public ResponseEntity<ApiResponse<String>> insertImage(@RequestHeader Map<String, String> headers, @RequestParam("file") MultipartFile file, @RequestParam("filePath") String filePath) {
 	
 		try {
+			Authentication.authenticate(headers);
 			return new ResponseEntity<ApiResponse<String>>(new ApiResponse<String>(s3.uploadFileWithPath(file, filePath),HttpStatus.OK, ""),HttpStatus.OK);
+		} catch (AuthenticationException e ) {
+			return new ResponseEntity<ApiResponse<String>>(new ApiResponse<String>(filePath,HttpStatus.UNAUTHORIZED, e.getMessage()),HttpStatus.UNAUTHORIZED);
 		} catch (Exception e) {
 			return new ResponseEntity<ApiResponse<String>>(new ApiResponse<String>(filePath ,HttpStatus.BAD_REQUEST, e.getMessage()),HttpStatus.BAD_REQUEST);
 		}
@@ -44,10 +51,13 @@ public class S3Controller {
 	
 	//delete path will be the full image url
 	@PostMapping (value="/delete")
-	public ResponseEntity<ApiResponse<String>> deleteImage(@RequestParam("filePath") String filePath) {
+	public ResponseEntity<ApiResponse<String>> deleteImage(@RequestHeader Map<String, String> headers, @RequestParam("filePath") String filePath) {
 	
 		try {
+			Authentication.authenticate(headers);
 			return new ResponseEntity<ApiResponse<String>>(new ApiResponse<String>(s3.deleteFileFromS3Bucket( filePath),HttpStatus.OK, ""),HttpStatus.OK);
+		} catch (AuthenticationException e ) {
+			return new ResponseEntity<ApiResponse<String>>(new ApiResponse<String>(filePath,HttpStatus.UNAUTHORIZED, e.getMessage()),HttpStatus.UNAUTHORIZED);
 		} catch (Exception e) {
 			return new ResponseEntity<ApiResponse<String>>(new ApiResponse<String>(filePath ,HttpStatus.BAD_REQUEST, e.getMessage()),HttpStatus.BAD_REQUEST);
 		}
@@ -55,11 +65,14 @@ public class S3Controller {
 	
 
 	@PostMapping (value="/deleteupdate")
-	public ResponseEntity<ApiResponse<String>> deleteInsertImage(@RequestParam("file") MultipartFile file, @RequestParam("filePath") String filePath, @RequestParam("deleteFilePath") String deleteFilePath) {
+	public ResponseEntity<ApiResponse<String>> deleteInsertImage(@RequestHeader Map<String, String> headers, @RequestParam("file") MultipartFile file, @RequestParam("filePath") String filePath, @RequestParam("deleteFilePath") String deleteFilePath) {
 	
 		try {
+			Authentication.authenticate(headers);
 			s3.deleteFileFromS3Bucket( filePath);
 			return new ResponseEntity<ApiResponse<String>>(new ApiResponse<String>(s3.uploadFileWithPath(file, filePath),HttpStatus.OK, ""),HttpStatus.OK);
+		} catch (AuthenticationException e ) {
+			return new ResponseEntity<ApiResponse<String>>(new ApiResponse<String>(filePath,HttpStatus.UNAUTHORIZED, e.getMessage()),HttpStatus.UNAUTHORIZED);
 		} catch (Exception e) {
 			return new ResponseEntity<ApiResponse<String>>(new ApiResponse<String>(filePath ,HttpStatus.BAD_REQUEST, e.getMessage()),HttpStatus.BAD_REQUEST);
 		}

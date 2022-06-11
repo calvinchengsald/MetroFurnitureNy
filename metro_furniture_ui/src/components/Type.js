@@ -45,7 +45,7 @@ export class Type extends Component {
             ...typeObject,
             m_subtype: newSubtypeArray
         }
-        callApiWithToken(this, (config)=>{
+        callApiWithToken(this.props.authentication, (config)=>{
             this.props.updateTypes(typeObject, config, (success) => { });
         } , this.props.throwMessageAction)
     }
@@ -73,7 +73,7 @@ export class Type extends Component {
                 prePrimaryKey: this.props.type.m_type
             };
             // this component will go away, it no longer exits. refetch type list to get the updated list
-            callApiWithToken(this, (config)=>{
+            callApiWithToken(this.props.authentication, (config)=>{
                 this.props.deleteUpdateTypes(deleteUpdateModel, config, (success) => {
                     if(success){
                         this.props.fetchTypes();
@@ -95,7 +95,7 @@ export class Type extends Component {
             m_url: this.state.m_url,
             m_subtype: this.state.m_subtype
         }
-        callApiWithToken(this, (config)=>{
+        callApiWithToken(this.props.authentication, (config)=>{
             this.props.updateTypes(newType, config, (success) =>{
                 if(success){
                     this.setState({
@@ -114,11 +114,11 @@ export class Type extends Component {
             m_subtype: removeFromArray(this.props.type.m_subtype, subtype.m_subtype)
         }
         
-        callApiWithToken(this, (config)=>{
+        callApiWithToken(this.props.authentication, (config)=>{
             this.props.deleteSubtypes(subtype, config);
         } , this.props.throwMessageAction)
         
-        callApiWithToken(this, (config)=>{
+        callApiWithToken(this.props.authentication, (config)=>{
             this.props.updateTypes(newType, config, (success) => { });
         } , this.props.throwMessageAction)
     }
@@ -130,10 +130,10 @@ export class Type extends Component {
             ...this.props.type,
             m_subtype: [...this.props.type.m_subtype, subtype.m_subtype]
         }
-        callApiWithToken(this, (config)=>{
+        callApiWithToken(this.props.authentication, (config)=>{
             this.props.postSubtypes(subtype,config, (success) => {
                 if(success) {
-                    callApiWithToken(this, (config)=>{
+                    callApiWithToken(this.props.authentication, (config)=>{
                         this.props.updateTypes(newType, config, (success) => { });
                         successCallbackFunction(true);
                         this.setState({
@@ -197,7 +197,7 @@ export class Type extends Component {
     // when edit, also what about items of this type????????
     actualDelete = () => {
         
-        callApiWithToken(this, (config)=>{
+        callApiWithToken(this.props.authentication, (config)=>{
             this.props.deleteTypes(this.props.type,config, (success) => {
 
             });
@@ -210,8 +210,9 @@ export class Type extends Component {
             return
         }
         var file = e.target.files[0];
-        
-        callApiWithToken(this, (config)=>{
+        console.log("props be")
+        console.log(this.props)
+        callApiWithToken(this.props.authentication, (config)=>{
             this.props.deletePostS3(file, "types/", "",config, (success, url)=> {
                 if (success){
                     this.setState({
@@ -347,6 +348,7 @@ Type.propTypes = {
 
 const mapStateToProps = state => ({
     
+    authentication: state.searchReducer.authentication
     // currentTypeEdit: state.typeReducer.currentTypeEdit,
 
 });

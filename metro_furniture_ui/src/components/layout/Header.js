@@ -1,14 +1,76 @@
-import React from 'react';
+
+import React, { Component } from 'react'
 import {Link} from 'react-router-dom';
-import { useAuth0 } from "../../react-auth0-spa";
+import {attemptLogin, attemptLogout} from '../../actions/searchActions'
+import {connect} from 'react-redux' ;
+import PropTypes from 'prop-types';
+import './Header.css';
 
-export const Header = () => {
+export class Header extends Component {
+    
+  constructor(props){
+    super(props);
+    this.state={
+        loginBox: false,
+        message: "",
+        username: "kiwi",
+        password: "kiwiisfat"
+    }
+  }
 
-    const { isAuthenticated, loginWithRedirect, logout } = useAuth0();
 
+    login = () =>{
+        if(this.props.authentication.authenticated){return}
+        const authenticationObject={
+            authenticated: true,
+            username:this.state.username,
+            password:this.state.password
+        }
+        this.props.attemptLogin(authenticationObject, (success)=>{
+            if(success) {
+                this.showLogin(false)
+            } else {
+                this.setState({message:"Wrong Credentials"})
+            }
+        });
+    }
+    showLogin=(show)=>{
+        this.setState({
+            loginBox: show,
+            message: ""
+        })
+    }
+    logout(){
+        if(!this.props.authentication.authenticated){return}
+        const authenticationObject={
+            authenticated: false,
+            username:"",
+            password:""
+        }
+        this.props.attemptLogout(authenticationObject);
+        this.setState({
+            loginBox: false
+        })
+    }
+    headerStyle= {
+        background: '#D3D3D3',
+        padding: '5px'
+    }
 
-    return (
-        <header className=" border-bottom border-dark mb-3" style={headerStyle}>
+    render(){ 
+        const loginBox = (
+        <div id="overlay">
+            <div id="overlay-box">
+                <input type="text" placeholder="username" onChange={(e)=>this.setState({username: e.target.value, message:""})}></input>
+                <input type="password" placeholder="password" onChange={(e)=>this.setState({password: e.target.value, message:""})}></input>
+                <div className="btn btn-sm btn-secondary" onClick={() => this.login()}>Login</div>
+                <div className="btn btn-sm btn-secondary" onClick={() => this.showLogin(false)}>Cancel</div>
+                <div>{this.state.message}</div>
+            </div>
+        </div>)
+
+        return(
+        <header className=" border-bottom border-dark mb-3" style={this.headerStyle}>
             <div className="App ml-5 mr-5">
                 <div className="row">
                     <div className="col-sm-9">
@@ -20,14 +82,15 @@ export const Header = () => {
                     
                     <div className="col-sm-3 d-flex justify-content-end">
                         
-                        {isAuthenticated && 
+                        {this.props.authentication.authenticated && 
                           (<Link   className="btn btn-sm btn-secondary mr-2" to='/inventory'>Inventory</Link> )
                         }
-                        {!isAuthenticated?
-                            <div className="btn btn-sm btn-secondary" onClick={() => loginWithRedirect({})} >Login</div>    
+                        {this.props.authentication.authenticated?
+                            <div className="btn btn-sm btn-secondary" onClick={() => this.logout()} >Logout</div>    
                             :
-                            <div className="btn btn-sm btn-secondary" onClick={() => logout({})} >Logout</div>    
+                            <div className="btn btn-sm btn-secondary" onClick={() => this.showLogin(true)} >Login</div>    
                         }
+                        {this.state.loginBox && loginBox}
                         <span className="mx-1 text-secondary font-italic"> v.1.2</span>
                     </div>
                 </div>
@@ -35,12 +98,26 @@ export const Header = () => {
         </header>
     )
 }
-
-const headerStyle= {
-    background: '#D3D3D3',
-    padding: '5px'
 }
 export const linkStyle = {
     color: '#FFFF00'
 }
-export default Header
+
+
+Header.propTypes = {
+    attemptLogin: PropTypes.func.isRequired,
+    attemptLogout: PropTypes.func.isRequired,
+}
+  
+  
+  const mapStateToProps = (state) => {
+    return { 
+    authentication: state.searchReducer.authentication
+    }
+  };
+  
+  export default connect(mapStateToProps, {attemptLogin, attemptLogout} )(Header);
+  
+  
+  
+  
