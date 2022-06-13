@@ -19,31 +19,10 @@ public class AuthenticationController {
 
 	@PostMapping(value = "/login")
 	public ResponseEntity<ApiResponse<Authentication>> authenticate(@RequestBody Authentication auth) {
-		System.out.println("enter with " + auth);
 		auth.authenticate();
 		return new ResponseEntity<ApiResponse<Authentication>>(new ApiResponse<Authentication>(auth,HttpStatus.OK, ""),HttpStatus.OK);
 	}
 	
 
-	@PostMapping(value = "/login2")
-	public ResponseEntity<ApiResponse<Authentication>> authenticate() {
-		Authentication auth = new Authentication("kiwi","iscool");
-		System.out.println("enter with " + auth);
-		return new ResponseEntity<ApiResponse<Authentication>>(new ApiResponse<Authentication>(auth,HttpStatus.OK, ""),HttpStatus.OK);
-	}
-
-	@GetMapping(value = "/login")
-	public  ResponseEntity<ApiResponse<Authentication>> getAll() {
-		Authentication auth = new Authentication("kiwi","iscool");
-		return new ResponseEntity<ApiResponse<Authentication>>(new ApiResponse<Authentication>(auth,HttpStatus.OK, ""),HttpStatus.OK);
-	}
-
-	@GetMapping(value = "/login2")
-	public  ResponseEntity<ApiResponse<Authentication>> getAll2() {
-		Authentication auth = new Authentication("kiwi","kiwiisfat");
-		return new ResponseEntity<ApiResponse<Authentication>>(new ApiResponse<Authentication>(auth,HttpStatus.OK, ""),HttpStatus.OK);
-	}
-	
-    
  
 }

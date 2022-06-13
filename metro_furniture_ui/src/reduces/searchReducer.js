@@ -23,7 +23,6 @@ export default function( state=initialState, action) {
                 filterObject: action.payload,
             }
         case actionTypes.AUTH_UPDATE :
-            console.log(action.payload)
             return {
                 ...state,
                 authentication: action.payload,

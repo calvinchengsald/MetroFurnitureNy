@@ -13,8 +13,8 @@ export class Header extends Component {
     this.state={
         loginBox: false,
         message: "",
-        username: "kiwi",
-        password: "kiwiisfat"
+        username: "",
+        password: ""
     }
   }
 
@@ -91,7 +91,7 @@ export class Header extends Component {
                             <div className="btn btn-sm btn-secondary" onClick={() => this.showLogin(true)} >Login</div>    
                         }
                         {this.state.loginBox && loginBox}
-                        <span className="mx-1 text-secondary font-italic"> v.1.2</span>
+                        <span className="mx-1 text-secondary font-italic"> v.1.3</span>
                     </div>
                 </div>
             </div>

@@ -52,6 +52,4 @@ Remove extra S from tutorial DONE
 
 
 need:
-- login status for other pages
-- when sending api post, include login credentials for authentication
-- authenticate per req on backend
+- deploy?
