@@ -42,7 +42,7 @@ public class S3Config {
 	
 	@PostConstruct
 	private void initializeAmazon() {
-        // inits
+        // inits amazon
 		Authentication.correctUsername =username;
 		Authentication.correctPassword =password;
 		
